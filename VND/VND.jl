@@ -2,8 +2,15 @@ include("../MWCCP.jl")
 include("../Neighborhoods/Neighborhoods.jl")
 using .MWCCPTools, .Neighborhoods
 
-(unodes, vnodes, u_dict, v_dict, constraints, edges, f_value) =  extract_mwccp(pwd() *
- "/data/tuning_instances/small/inst_50_4_00001")
+#= Give file path as an argument when calling julia !  You can create a launch.json in Vscode. =#
+
+if length(ARGS) > 0
+    graph_path = ARGS[1]
+else
+    error("A graph file must be given.")
+end
+
+(unodes, vnodes, u_dict, v_dict, constraints, edges, f_value) =  extract_mwccp(graph_path)
 
 g = MWCCP(unodes, vnodes, u_dict, v_dict, constraints, edges, f_value)
 
@@ -40,17 +47,9 @@ function VND(g, limit, bestfit = true)
 end
 
 println(g)
-solution = VND(g, 2)
+
+@time begin
+    solution = VND(g, 2)
+end
+
 println(solution)
-#= neighborhood = flip_consecutive_nodes(g) =#
-#= neighborhood = move_one_node(g) =#
-#= neighborhood = get_2_opt_neighborhood(g) =#
-#= println(neighborhood)
- =#
-#= println(get_first_improvement(g.v_nodes, g.f_value, neighborhood))
-println(get_best_improvement(g.v_nodes, g.f_value, neighborhood)) =#
-# Print results to check
-#= println("Unodes: ", typeof(u_nodes))
-println("Vnodes: ", typeof(v_nodes))
-println("Constraints: ", typeof(constraints))
-println("Edges: ", typeof(edges)) =#
