@@ -16,11 +16,12 @@ g = MWCCP(unodes, vnodes, u_dict, v_dict, constraints, edges, f_value)
 
 function VND(g, limit, bestfit = true)
     l, i = 0, 1
+    #=     There is no "get_2_opt_with_consecutive_flips" because the consecutive flips are already included in 2_opt =#
     Neighborhoods = [get_flip_consecutive_nodes_neighborhood,
+    get_2_opt_neighborhood,
     get_move_one_node_neighborhood,
     get_consecutive_flips_with_one_node_move_neighborhood,
-    get_2_opt_neighborhood,
-    get_2_opt_with_one_node_move_neighborhood
+    get_2_opt_with_one_node_move_neighborhood,
     ]
     n = length(Neighborhoods)
     value = g.f_value
