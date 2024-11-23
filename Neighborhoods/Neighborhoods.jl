@@ -12,6 +12,8 @@ module Neighborhoods
     export get_first_improvement
     export get_best_improvement
 
+    export evaluate_one_node_interaction
+
     function get_edges_connected_to_vnode(edges, node)
         node_edges::Vector{Tuple{Tuple{Int64,Int64},Int64}} = []
         for ((e1,e2),w) in edges

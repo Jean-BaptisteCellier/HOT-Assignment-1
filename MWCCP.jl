@@ -180,7 +180,7 @@ module MWCCPTools
             "u_nodes: $(g.u_nodes)," * '\n' *
             "v_nodes: $(g.v_nodes)," * '\n' *
             "constraints: $(g.constraints)," * '\n' *
-            "graph: graph: {$(length(g.u_nodes)) + $(length(g.v_nodes))), $(length(g.edges))} 
+            "graph: graph: {($(length(g.u_nodes)) + $(length(g.v_nodes))), $(length(g.edges))} 
                 undirected simple Int64 graph with Int64 weights" * '\n' *
             "f_value : $(g.f_value)" * '\n' *
             "------------------------------------------------------------------------------------------------------"
