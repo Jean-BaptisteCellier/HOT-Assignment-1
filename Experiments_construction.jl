@@ -8,7 +8,7 @@ using Dates
 #########################################################################################
 ######################### DETERMINISTIC GREEDY CONSTRUCTION #############################
 
-function experiment_greedy_det(unodes, vnodes, edges, constraints, iterations)
+function experiment_greedy_det(unodes, vnodes, edges, constraints, iterations, out=true)
     best_sol = nothing
     best_cost = Inf
     cost_list = []  
@@ -27,7 +27,9 @@ function experiment_greedy_det(unodes, vnodes, edges, constraints, iterations)
         end
         push!(cost_list, cost)
         push!(sol_list, sol) 
-        println("Iteration $i: Cost = $cost, Time = $elapsed_time")
+        if out
+            println("Iteration $i: Cost = $cost, Time = $elapsed_time")
+        end
     end
 
     avg_cost = mean(cost_list)
@@ -36,13 +38,14 @@ function experiment_greedy_det(unodes, vnodes, edges, constraints, iterations)
 
     avg_final_obj = cost_list[end]
 
-    println("\n---- Experiment summary ----")
-    println("--- Greedy deterministic construction ---")
-    println("Best solution cost: $best_cost")
-    println("Average cost: $avg_cost")
-    println("Average running time: $avg_time_seconds seconds")
-    println("Final objective (last run): $avg_final_obj")
-    
+    if out
+        println("\n---- Experiment summary ----")
+        println("--- Greedy deterministic construction ---")
+        println("Best solution cost: $best_cost")
+        println("Average cost: $avg_cost")
+        println("Average running time: $avg_time_seconds seconds")
+        println("Final objective (last run): $avg_final_obj")
+    end   
     return best_sol, best_cost, avg_cost, avg_final_obj, avg_time
 end
 
@@ -124,6 +127,19 @@ end
 
 #########################################################################################
 ################################## EXPERIMENTS ##########################################
+# Path to the input file
+filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/small/inst_50_4_00001"
+
+# Read sizes
+n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
+
+# Create unodes and vnodes
+unodes, vnodes = create_unodes_vnodes(n_unodes, n_vnodes)
+
+# Read constraints and edges
+constraints = read_constraints(filepath, n_constraints)
+edges = read_edges(filepath)
+
 # experiment_greedy_det(unodes, vnodes, edges, constraints)
-# experiment_randomized_shuffle(unodes, vnodes, edges, constraints)
+experiment_randomized_shuffle(unodes, vnodes, edges, constraints)
 # experiment_Kgreedy_randomized(unodes, vnodes, edges, constraints, 5)
