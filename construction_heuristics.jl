@@ -1,4 +1,5 @@
 using Random
+include("Script data processing.jl")
 
 function constraints_satisfied(constructed_v, vnode, constraints)
     # Check if adding vnode satisfies all constraints given the constructed_v order
@@ -10,22 +11,62 @@ function constraints_satisfied(constructed_v, vnode, constraints)
     return true
 end
 
-function calculate_crossing_cost(v_order, edges)
-    # Compute total crossing cost for a given order of V nodes
-    total_cost = 0
-    v_index = Dict(v => i for (i, v) in enumerate(v_order))
-    
-    # Calculate crossing cost for each pair of edges
+function delta_evaluation(vnode, v_order, edges, v_index)
+    delta_cost = 0
+    temp_index = deepcopy(v_index)  # Simulate adding vnode by creating a temp index
+    temp_index[vnode] = length(v_order) + 1  # Simulate adding vnode to the order
+
+    # Calculate the crossing cost only for edges that involve the newly added node
     for ((u1, v1), cost1) in edges
-        for ((u2, v2), cost2) in edges
-            if haskey(v_index, v1) && haskey(v_index, v2)
-                if (u1 < u2 && v_index[v1] > v_index[v2]) || (u1 > u2 && v_index[v1] < v_index[v2])
-                    total_cost += cost1 + cost2  # Sum cost of both crossing edges
+        if v1 == vnode
+            for ((u2, v2), cost2) in edges
+                if v2 == vnode  # Skip 
+                    continue
+                end
+                if haskey(temp_index, v1) && haskey(temp_index, v2)
+                    if (u1 < u2 && temp_index[v1] > temp_index[v2]) || (u1 > u2 && temp_index[v1] < temp_index[v2])
+                        delta_cost += cost1+cost2 
+                    end
                 end
             end
         end
     end
-    return total_cost / 2  # Account for double counting of all crossings
+    return delta_cost
+end
+
+function greedy_heuristic(unodes, vnodes, edges, constraints)
+    remaining_vnodes = copy(vnodes)
+    v_order = []
+    v_index = Dict()  # Track positions of nodes in the solution
+    total_cost = 0
+
+    while !isempty(remaining_vnodes)
+        min_cost = Inf
+        best_vnode = nothing
+
+        for vnode in remaining_vnodes
+            if constraints_satisfied(v_order, vnode, constraints)
+                delta_cost = delta_evaluation(vnode, v_order, edges, v_index)
+                candidate_cost = total_cost + delta_cost
+                if candidate_cost < min_cost
+                    min_cost = candidate_cost
+                    best_vnode = vnode
+                end
+            end
+        end
+
+        if best_vnode === nothing
+            error("No valid node found! Check constraints.")
+        end
+
+        # Add the best vnode to the solution
+        push!(v_order, best_vnode)
+        v_index[best_vnode] = length(v_order)  # Update the position of the node
+        total_cost += delta_cost  # Accumulate the delta cost (not halved)
+        filter!(x -> x != best_vnode, remaining_vnodes)  # Remove the chosen node from remaining list
+    end
+
+    return v_order, total_cost  # Return the solution and the total cost
 end
 
 
@@ -34,27 +75,32 @@ end
 function greedy_heuristic(unodes, vnodes, edges, constraints)
     remaining_vnodes = copy(vnodes)
     v_order = []
+    v_index = Dict()  # Track positions of nodes in the solution
+    total_cost = 0
+
     while !isempty(remaining_vnodes)
         min_cost = Inf
         best_vnode = nothing
-        
+
         for vnode in remaining_vnodes
-            # Check constraints
             if constraints_satisfied(v_order, vnode, constraints)
-                test_order = vcat(v_order, [vnode])
-                crossing_cost = calculate_crossing_cost(test_order, edges)
-                
-                if crossing_cost < min_cost
-                    min_cost = crossing_cost
+                delta_cost = delta_evaluation(vnode, v_order, edges, v_index)
+                candidate_cost = total_cost + delta_cost
+                if candidate_cost < min_cost
+                    min_cost = candidate_cost
                     best_vnode = vnode
                 end
             end
         end
-        push!(v_order, best_vnode)
-        filter!(x -> x != best_vnode, remaining_vnodes)
+        push!(v_order, best_vnode)  # Add the best node to the solution
+        v_index[best_vnode] = length(v_order)  # Update the position of the node
+        total_cost += delta_evaluation(best_vnode, v_order, edges, v_index) # Accumulate the delta cost
+        filter!(x -> x != best_vnode, remaining_vnodes)  # Remove the chosen node from remaining list
     end
-    return v_order, calculate_crossing_cost(v_order, edges)
+
+    return v_order, total_cost
 end
+
 
 ################ Randomized construction heuristics ################
 
@@ -125,4 +171,22 @@ function repeat_randomized_K(unodes, vnodes, edges, constraints, k, max_iter)
     best_cost = costs[best_cost_idx]
     best_sol = rcl[best_cost_idx]
     return best_sol, best_cost
+end
+
+
+function calculate_full_cost(v_order, edges)
+    total_cost = 0
+    v_index = Dict(v => i for (i, v) in enumerate(v_order))
+
+    for ((u1, v1), cost1) in edges
+        for ((u2, v2), cost2) in edges
+            if haskey(v_index, v1) && haskey(v_index, v2)
+                if (u1 < u2 && v_index[v1] > v_index[v2]) || (u1 > u2 && v_index[v1] < v_index[v2])
+                    total_cost += cost1 + cost2
+                end
+            end
+        end
+    end
+
+    return total_cost / 2
 end
