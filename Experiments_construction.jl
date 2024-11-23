@@ -30,9 +30,6 @@ function experiment_greedy_det(unodes, vnodes, edges, constraints, iterations)
         println("Iteration $i: Cost = $cost, Time = $elapsed_time")
     end
 
-    min_cost = min(cost_list)
-    max_cost = max(cost_list)
-
     avg_cost = mean(cost_list)
     avg_time = mean(time_list)
     avg_time_seconds = avg_time/1000
@@ -46,7 +43,7 @@ function experiment_greedy_det(unodes, vnodes, edges, constraints, iterations)
     println("Average running time: $avg_time_seconds seconds")
     println("Final objective (last run): $avg_final_obj")
     
-    return best_sol, best_cost, avg_cost, avg_final_obj, avg_time, min_cost, max_cost
+    return best_sol, best_cost, avg_cost, avg_final_obj, avg_time
 end
 
 #########################################################################################
