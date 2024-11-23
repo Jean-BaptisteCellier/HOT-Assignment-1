@@ -1,11 +1,5 @@
 using Random
 
-unodes = [1,2,3,4,5]
-vnodes = [10,9,8,7,6] # We're trying to find V's optimal order
-edges = Dict((1,7) => 1, (2,8) => 2, (3,9) => 1, (4,10) => 3, (5,6) => 11)
-constraints = [(7,10), (8,9)]
-
-
 function constraints_satisfied(constructed_v, vnode, constraints)
     # Check if adding vnode satisfies all constraints given the constructed_v order
     for (before, after) in constraints
@@ -61,15 +55,11 @@ function greedy_heuristic(unodes, vnodes, edges, constraints)
     return v_order, calculate_crossing_cost(v_order, edges)
 end
 
-# The algorithm is very sensitive to the choice of the first V node (that will be the first element in vnodes, since
-# no constraints or crossings apply at the beginning). In particular, by using vnodes = [10,9,8,7,6] instead of [6,7,8,9,10],
-# we obtain a total cost of 31, instead of 51 previously
-
 # 1st option: shuffling the vnodes input order at each iteration
-function randomized_construction_heuristic(unodes, vnodes, edges, constraints, iterations)
+function randomized_construction_heuristic(unodes, vnodes, edges, constraints, max_iter)
     best_order = []
     best_cost = Inf
-    for _ in 1:iterations
+    for _ in 1:max_iter
         # Randomly shuffle the vnodes
         shuffled_vnodes = shuffle(vnodes)
         # Apply the greedy heuristic with the randomized vnodes
@@ -121,7 +111,7 @@ function randomized_greedy_heuristic(unodes, vnodes, edges, constraints, k)
     return v_order, calculate_crossing_cost(v_order, edges)
 end
 
-function repeat_randomizedKnn(unodes, vnodes, edges, constraints, k, iterations)
+function repeat_randomized_K(unodes, vnodes, edges, constraints, k, iterations)
     rcl = []
     costs = []
     for _ in 1:iterations
@@ -134,18 +124,3 @@ function repeat_randomizedKnn(unodes, vnodes, edges, constraints, k, iterations)
     best_sol = rcl[best_cost_idx]
     return best_sol, best_cost
 end
-
-print("GREEDY HEURISTIC:\n")
-optimal_v_order, total_cost = greedy_heuristic(unodes, vnodes, edges, constraints)
-println("Optimal V order: $optimal_v_order")
-println("Total Crossing Cost: $total_cost")
-
-print("\nRANDOMIZED GH: SHUFFLE:\n")
-optimal_v_order1, total_cost1 = randomized_construction_heuristic(unodes, vnodes, edges, constraints, 20)
-println("Optimal V order: $optimal_v_order1")
-println("Total Crossing Cost: $total_cost1")
-
-print("\nRANDOMIZED GH: K-NN:\n")
-optimal_v_order2, total_cost2 = repeat_randomizedKnn(unodes, vnodes, edges, constraints, 3, 20)
-println("Optimal V order: $optimal_v_order2")
-println("Total Crossing Cost: $total_cost2")
