@@ -29,10 +29,11 @@ function calculate_crossing_cost(v_order, edges)
 end
 
 
+################ Greedy deterministic construction heuristic ################
+
 function greedy_heuristic(unodes, vnodes, edges, constraints)
     remaining_vnodes = copy(vnodes)
     v_order = []
-
     while !isempty(remaining_vnodes)
         min_cost = Inf
         best_vnode = nothing
@@ -55,7 +56,9 @@ function greedy_heuristic(unodes, vnodes, edges, constraints)
     return v_order, calculate_crossing_cost(v_order, edges)
 end
 
-# 1st option: shuffling the vnodes input order at each iteration
+################ Randomized construction heuristics ################
+
+# 1st option for randomization: shuffling the vnodes input order at each iteration
 function randomized_construction_heuristic(unodes, vnodes, edges, constraints, max_iter)
     best_order = []
     best_cost = Inf
@@ -73,19 +76,18 @@ function randomized_construction_heuristic(unodes, vnodes, edges, constraints, m
     return best_order, best_cost
 end
 
-# 2nd option: selecting the k "nearest" nodes at each step then pick randomly the next node among them, and repeating
+# 2nd option for randomization: selecting the k "nearest" nodes at each step then pick randomly the next node among them, and repeating
 function randomized_greedy_heuristic(unodes, vnodes, edges, constraints, k)
     remaining_vnodes = copy(vnodes)
     v_order = []
     while !isempty(remaining_vnodes)
-        # Initialize minimum cost and best vnode
         min_cost = Inf
         best_vnode = nothing
         cl = [] # candidate list
         costs = []
         for vnode in remaining_vnodes
             if constraints_satisfied(v_order, vnode, constraints)
-                test_order = vcat(v_order, [vnode])  # Build the new order with the candidate vnode
+                test_order = vcat(v_order, [vnode])  
                 crossing_cost = calculate_crossing_cost(test_order, edges)
                 
                 push!(cl, vnode)
@@ -101,7 +103,6 @@ function randomized_greedy_heuristic(unodes, vnodes, edges, constraints, k)
             # Randomly pick one node from the k minimal ones
             rand_node = rand(rcl)
             push!(v_order, rand_node)
-
             # Remove the selected node from remaining vnodes
             filter!(x -> x != rand_node, remaining_vnodes)
         else
@@ -111,6 +112,7 @@ function randomized_greedy_heuristic(unodes, vnodes, edges, constraints, k)
     return v_order, calculate_crossing_cost(v_order, edges)
 end
 
+# Repeating the last function max_iter times
 function repeat_randomized_K(unodes, vnodes, edges, constraints, k, max_iter)
     rcl = []
     costs = []
