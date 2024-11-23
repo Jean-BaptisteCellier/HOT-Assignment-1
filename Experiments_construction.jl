@@ -52,7 +52,7 @@ end
 #########################################################################################
 ######################### RANDOMIZED CONSTRUCTION: SHUFFLE ##############################
 
-function experiment_randomized_shuffle(unodes, vnodes, edges, constraints, iterations=5)
+function experiment_randomized_shuffle(unodes, vnodes, edges, constraints, iterations=5, max_iter=10)
     best_sol = nothing
     best_cost = Inf
     cost_list = []  
@@ -60,7 +60,7 @@ function experiment_randomized_shuffle(unodes, vnodes, edges, constraints, itera
     
     for i in 1:iterations
         start_time = now()
-        sol, cost = randomized_construction_heuristic(unodes, vnodes, edges, constraints, iterations) 
+        sol, cost = randomized_construction_heuristic(unodes, vnodes, edges, constraints, max_iter) 
         end_time = now()
         elapsed_time = end_time - start_time
         push!(time_list, Dates.value(elapsed_time))  
@@ -90,7 +90,7 @@ end
 #########################################################################################
 #################### RANDOMIZED CONSTRUCTION: K MOST PROMISING ##########################
 
-function experiment_Kgreedy_randomized(unodes, vnodes, edges, constraints, k, iterations=5)
+function experiment_Kgreedy_randomized(unodes, vnodes, edges, constraints, k, iterations=5, max_iter=10)
     best_sol = nothing
     best_cost = Inf
     cost_list = [] 
@@ -98,7 +98,7 @@ function experiment_Kgreedy_randomized(unodes, vnodes, edges, constraints, k, it
 
     for i in 1:iterations
         start_time = now()
-        sol, cost = repeat_randomized_K(unodes, vnodes, edges, constraints, k, 3)
+        sol, cost = repeat_randomized_K(unodes, vnodes, edges, constraints, k, max_iter)
         end_time = now()
         elapsed_time = end_time - start_time
         push!(time_list, Dates.value(elapsed_time))  

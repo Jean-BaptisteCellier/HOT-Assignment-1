@@ -111,10 +111,10 @@ function randomized_greedy_heuristic(unodes, vnodes, edges, constraints, k)
     return v_order, calculate_crossing_cost(v_order, edges)
 end
 
-function repeat_randomized_K(unodes, vnodes, edges, constraints, k, iterations)
+function repeat_randomized_K(unodes, vnodes, edges, constraints, k, max_iter)
     rcl = []
     costs = []
-    for _ in 1:iterations
+    for _ in 1:max_iter
         sol_iter, cost = randomized_greedy_heuristic(unodes, vnodes, edges, constraints, k)
         push!(rcl, sol_iter)
         push!(costs, cost)
