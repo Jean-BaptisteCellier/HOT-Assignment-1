@@ -7,7 +7,7 @@ module LocalSearch
     export local_search
     export print_average_time
     export local_search_consecutive
-    
+    export local_search_2_opt
 
     ######### LOCAL SEARCH ##########
 
@@ -26,12 +26,12 @@ module LocalSearch
     return current_solution
     end
 
-    function print_average_time(heuristic_method, g::MWCCP, iterations, disp = true)
+    function print_average_time(heuristic_method, g::MWCCP, iterations, ls_it, disp = true)
         elapsed_time = 0
         solution = deepcopy(g)
         for i in 1:iterations
             start = time()
-            solution = heuristic_method(g, 100)
+            solution = heuristic_method(g, ls_it)
             the_end = time()
             if disp
                 println(i)
@@ -47,6 +47,10 @@ module LocalSearch
 
     function local_search_consecutive(g::MWCCP, iterations)
         local_search(g, get_flip_consecutive_nodes_neighborhood, get_best_improvement, iterations)
+    end
+
+    function local_search_2_opt(g::MWCCP, iterations)
+        local_search(g, get_2_opt_neighborhood, get_best_improvement, iterations)
     end
 
 end

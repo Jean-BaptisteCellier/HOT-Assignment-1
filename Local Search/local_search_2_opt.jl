@@ -15,6 +15,6 @@ end
 g = MWCCP(unodes, vnodes, u_dict, v_dict, constraints, edges, f_value)
 println(g)
 
-res = print_average_time(local_search_consecutive, g, 5, 100, false)
+res = print_average_time(local_search_2_opt, g, 4, 20, false)
 
 println(res)
