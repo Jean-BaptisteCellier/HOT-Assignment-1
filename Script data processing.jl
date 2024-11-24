@@ -71,24 +71,23 @@ function read_edges(filename::String)
     return edges
 end
 
+# ########### MAIN CODE ####################
 
-########### MAIN CODE ####################
+# # Path to the input file
+# filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/small/inst_50_4_00001"
 
-# Path to the input file
-filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/small/inst_50_4_00001"
+# # Read sizes
+# n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
 
-# Read sizes
-n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
+# # Create unodes and vnodes
+# unodes, vnodes = create_unodes_vnodes(n_unodes, n_vnodes)
 
-# Create unodes and vnodes
-unodes, vnodes = create_unodes_vnodes(n_unodes, n_vnodes)
+# # Read constraints and edges
+# constraints = read_constraints(filepath, n_constraints)
+# edges = read_edges(filepath)
 
-# Read constraints and edges
-constraints = read_constraints(filepath, n_constraints)
-edges = read_edges(filepath)
-
-# Print results to check
-println("Unodes: ", unodes)
-println("Vnodes: ", vnodes)
-println("Constraints: ", constraints)
-println("Edges: ", edges)
+# # Print results to check
+# println("Unodes: ", unodes)
+# println("Vnodes: ", vnodes)
+# println("Constraints: ", constraints)
+# println("Edges: ", edges)
