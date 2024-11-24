@@ -108,10 +108,10 @@ end
 function evaluate_alpha_for_grasp(g::MWCCP, iteration = 100)
     N1, N2 = 10, iteration
     println("")
-    for i in 0:N1
+    for i in 0:2:N1
         moy = 0
         for _ in 1:N2
-            res = randomized_greedy_heuristic(g)
+            res = randomized_greedy_heuristic(g, i/10)
             moy += res.f_value
         end
         if i==10
@@ -123,6 +123,10 @@ function evaluate_alpha_for_grasp(g::MWCCP, iteration = 100)
     end
 end
 
+function determistic_greedy(g)
+    return randomized_greedy_heuristic(g, 0)
+end
+
 println(g)
 
 @time begin
@@ -130,7 +134,7 @@ println(g)
  =#    res = GRASP(g, 20)
   #=
 #=  =#    res = local_search(g, get_flip_consecutive_nodes_neighborhood, get_best_improvement, 10)
- =# #=     res = evaluate_alpha_for_grasp(g) =#
- end
+#=  =#     res = print_average_time(determistic_greedy, g, 10, 0, false, 1)
+ =# end
  println(res)
 #= @test objective_value(res) == res.f_value =#
