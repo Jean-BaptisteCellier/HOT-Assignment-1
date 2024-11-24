@@ -8,7 +8,12 @@ using Dates
 #########################################################################################
 ######################### DETERMINISTIC GREEDY CONSTRUCTION #############################
 
-function experiment_greedy_det(unodes, vnodes, edges, constraints, iterations, out=true)
+function experiment_greedy_det(filepath, iterations, out=true)
+    n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
+    unodes, vnodes = create_unodes_vnodes(n_unodes, n_vnodes)
+    constraints = read_constraints(filepath, n_constraints)
+    edges = read_edges(filepath)
+
     best_sol = nothing
     best_cost = Inf
     cost_list = []  
@@ -52,15 +57,20 @@ end
 #########################################################################################
 ######################### RANDOMIZED CONSTRUCTION: SHUFFLE ##############################
 
-function experiment_randomized_shuffle(unodes, vnodes, edges, constraints, iterations=5, max_iter=10)
+function experiment_randomized_shuffle(filepath, iterations=10)
+    n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
+    unodes, vnodes = create_unodes_vnodes(n_unodes, n_vnodes)
+    constraints = read_constraints(filepath, n_constraints)
+    edges = read_edges(filepath)
+
     best_sol = nothing
     best_cost = Inf
     cost_list = []  
     time_list = [] 
-    
+   
     for i in 1:iterations
         start_time = now()
-        sol, cost = randomized_construction_heuristic(unodes, vnodes, edges, constraints, max_iter) 
+        sol, cost = randomized_construction_heuristic(unodes, vnodes, edges, constraints) 
         end_time = now()
         elapsed_time = end_time - start_time
         push!(time_list, Dates.value(elapsed_time))  
@@ -88,19 +98,25 @@ function experiment_randomized_shuffle(unodes, vnodes, edges, constraints, itera
 end
 
 #########################################################################################
-#################### RANDOMIZED CONSTRUCTION: K MOST PROMISING ##########################
+############### RANDOMIZED CONSTRUCTION: PICK AMONG K MOST PROMISING ####################
 
-function experiment_Kgreedy_randomized(unodes, vnodes, edges, constraints, k, iterations=5, max_iter=10)
+function experiment_K_randomized(filepath, k, iterations=10)
+    n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
+    unodes, vnodes = create_unodes_vnodes(n_unodes, n_vnodes)
+    constraints = read_constraints(filepath, n_constraints)
+    edges = read_edges(filepath)
+
     best_sol = nothing
     best_cost = Inf
-    cost_list = [] 
+    cost_list = []  
     time_list = [] 
 
     for i in 1:iterations
         start_time = now()
-        sol, cost = repeat_randomized_K(unodes, vnodes, edges, constraints, k, max_iter)
+        sol, cost = randomized_greedy_heuristic(unodes, vnodes, edges, constraints, k)
         end_time = now()
         elapsed_time = end_time - start_time
+
         push!(time_list, Dates.value(elapsed_time))  
         if cost < best_cost
             best_sol = sol
@@ -111,35 +127,25 @@ function experiment_Kgreedy_randomized(unodes, vnodes, edges, constraints, k, it
     end
 
     avg_cost = mean(cost_list)
-    avg_time = mean(time_list) / 1000 
-
+    avg_time = mean(time_list) / 1000  # Convert ms to seconds
     avg_final_obj = cost_list[end]
 
-    println("\n--- Experiment summary ---")
-    println("--- Randomized construction [K most promising] ---")
-    println("Best solution cost: $best_cost")
-    println("Average cost: $avg_cost")
-    println("Average running time: $avg_time seconds")
-    println("Final objective (last run): $avg_final_obj")
+    println("\n--- Experiment Summary ---")
+    println("--- Randomized construction [K-randomized] ---")
+    println("Best Solution Cost: $best_cost")
+    println("Average Cost: $avg_cost")
+    println("Average Running Time: $avg_time seconds")
+    println("Final Objective (last run): $avg_final_obj")
 
     return best_sol, best_cost, avg_cost, avg_final_obj, avg_time
 end
 
+
 #########################################################################################
 ################################## EXPERIMENTS ##########################################
-# Path to the input file
-filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/small/inst_50_4_00001"
 
-# Read sizes
-n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
+filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/medium/inst_200_20_00001"
 
-# Create unodes and vnodes
-unodes, vnodes = create_unodes_vnodes(n_unodes, n_vnodes)
-
-# Read constraints and edges
-constraints = read_constraints(filepath, n_constraints)
-edges = read_edges(filepath)
-
-# experiment_greedy_det(unodes, vnodes, edges, constraints)
-# experiment_randomized_shuffle(unodes, vnodes, edges, constraints)
-# experiment_Kgreedy_randomized(unodes, vnodes, edges, constraints, 5)
+# experiment_greedy_det(filepath, 5)
+# experiment_randomized_shuffle(filepath)
+experiment_K_randomized(filepath, 10)
