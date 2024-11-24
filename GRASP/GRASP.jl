@@ -126,7 +126,8 @@ end
 println(g)
 
 @time begin
-    res = GRASP(g, 30)
+    res = GRASP(g, 10)
+    #= res = local_search(g, get_move_one_node_neighborhood, get_best_improvement) =#
 end
 #= @test objective_value(res) == res.f_value =#
 

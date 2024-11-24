@@ -47,11 +47,28 @@ function VND(g, limit, bestfit = true)
     return g
 end
 
+function print_average_time(heuristic_method, g::MWCCP, iterations)
+    elapsed_time = 0
+    solution = deepcopy(g)
+    for _ in 1:iterations
+        start = time()
+        solution = VND(g, 3)
+        the_end = time()
+        elapsed_time += (the_end - start)
+    end
+    println("")
+    print("Elapsed time : ")
+    println(elapsed_time / iterations)
+    return solution
+end
+
 println(g)
 
-@time begin
+solution = print_average_time(VND, g, 6)
+
+#= @time begin
     solution = VND(g, 3)
-end
+end =#
 
 #= @test objective_value(solution) == solution.f_value =#
 
