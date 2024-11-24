@@ -8,6 +8,7 @@ module LocalSearch
     export print_average_time
     export local_search_consecutive
     export local_search_2_opt
+    export local_search_move_one_node
 
     ######### LOCAL SEARCH ##########
 
@@ -51,6 +52,10 @@ module LocalSearch
 
     function local_search_2_opt(g::MWCCP, iterations)
         local_search(g, get_2_opt_neighborhood, get_best_improvement, iterations)
+    end
+
+    function local_search_move_one_node(g::MWCCP, iterations)
+        local_search(g, get_move_one_node_neighborhood, get_best_improvement, iterations)
     end
 
 end
