@@ -1,6 +1,6 @@
 include("../MWCCP.jl")
 include("../Neighborhoods/Neighborhoods.jl")
-using .MWCCPTools, .Neighborhoods
+using .MWCCPTools, .Neighborhoods, Test
 
 #= Give file path as an argument when calling julia !  You can create a launch.json in Vscode. =#
 
@@ -50,7 +50,9 @@ end
 println(g)
 
 @time begin
-    solution = VND(g, 2)
+    solution = VND(g, 3)
 end
+
+#= @test objective_value(solution) == solution.f_value =#
 
 println(solution)

@@ -1,6 +1,7 @@
 include("../MWCCP.jl")
 include("../Neighborhoods/Neighborhoods.jl")
-using .MWCCPTools, .Neighborhoods
+include("../Local Search/local_search.jl")
+using .MWCCPTools, .Neighborhoods, .LocalSearch, Test
 
 #= Give file path as an argument when calling julia !  You can create a launch.json in Vscode. =#
 
@@ -38,9 +39,9 @@ function get_candidate_list(v_nodes_partial, f_value_partial, nodes_left, u_dict
             f_value_node = evaluate_one_node_interaction(edges, node, u_dict, v_dict_candidate)
          #=    Edges overlapping are not counted twice because when a sigle v_node of the edges is added
             the other v_node position is NaN which gives 'false' with every comparison (function 'crossed_values' in Neighborhoods).
-            Because of that the overlapping edges are not added when the first v_node is added .
+            Because of that the overlapping edges are not added when the first v_node is added.
             Overlapping edges are only added when the second v_node is added. =#
-            push!(candidate_list, (partial_candidate,f_value_partial + f_value_node, i))
+            push!(candidate_list, (partial_candidate, f_value_partial + f_value_node, i))
         end
     end
     return candidate_list
@@ -63,18 +64,18 @@ function reset_dict(v_dict)
     return Dict(k => NaN for (k, v) in v_dict)
 end
 
-function randomized_greedy_heuristic(g::MWCCP)
-    nodes_left = g.v_nodes
+function randomized_greedy_heuristic(g::MWCCP, alpha = 0.5)
+    nodes_left = deepcopy(g.v_nodes)
     u_dict = g.u_dict
     v_dict = reset_dict(g.v_dict)
     constraints = g.constraints
     edges = g.edges
-    v_nodes_partial = []
+    v_nodes_partial::Vector{Int64} = []
     f_value_partial = 0
     i = 1
     while !isempty(nodes_left)
         candidate_list = get_candidate_list(v_nodes_partial, f_value_partial, nodes_left, u_dict, v_dict, constraints, edges, length(v_nodes_partial))
-        restricted_candidate_list = get_restricted_candidate_list(candidate_list, 0.1)
+        restricted_candidate_list = get_restricted_candidate_list(candidate_list, 1)
         chosen_one = get_random_candidate_from_list(restricted_candidate_list)
         v_nodes_partial = chosen_one[1]
         f_value_partial = chosen_one[2]
@@ -83,13 +84,50 @@ function randomized_greedy_heuristic(g::MWCCP)
         v_dict[node] = i
         deleteat!(nodes_left, index_node)
         i += 1
-        print(chosen_one)
     end
     return MWCCP(g.u_nodes, v_nodes_partial, g.u_dict, v_dict, constraints, edges, f_value_partial)
 end
 
-print(g)
+function GRASP(g::MWCCP, iterations = 10)
+    xstar = deepcopy(g)
+    for _ in 1:iterations
+        x = randomized_greedy_heuristic(xstar)
+        #= @test objective_value(x) == x.f_value
+        println(x) =#
+        xp = local_search(x, get_flip_consecutive_nodes_neighborhood, get_best_improvement)
+        #= @test objective_value(xp) == xp.f_value
+        println(xp) =#
+        if xp.f_value < xstar.f_value
+            xstar = deepcopy(xp)
+        end
+        #= println(xstar) =#
+    end
+    return xstar
+end
 
-res = randomized_greedy_heuristic(g)
+function evaluate_alpha_for_grasp(g::MWCCP, iteration = 100)
+    N1, N2 = 10, iteration
+    println("")
+    for i in 0:N1
+        moy = 0
+        for _ in 1:N2
+            res = randomized_greedy_heuristic(g)
+            moy += res.f_value
+        end
+        if i==10
+            print("1.0 : ")
+        else
+            print("0." * string(i) * ": ")
+        end
+        println(convert(Int64,round(moy/(N2+1))))
+    end
+end
 
-print(res)
+println(g)
+
+@time begin
+    res = GRASP(g, 30)
+end
+#= @test objective_value(res) == res.f_value =#
+
+println(res)

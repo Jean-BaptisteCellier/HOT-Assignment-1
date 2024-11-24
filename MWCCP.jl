@@ -6,12 +6,13 @@ module MWCCPTools
     export MWCCP
     export reverse_list
     export crossed_values
+    export objective_value
 
     struct MWCCP
         u_nodes::Vector{Int64}
         v_nodes::Vector{Int64}
         u_dict::Dict{Int64,Int64}
-        v_dict::Dict{Int64,Int64}
+        v_dict::Dict{Int64,Union{Int64,Float64}} #Float64 for NaN only
         constraints::Vector{Tuple{Int64, Int64}}
         edges::Vector{Tuple{Tuple{Int64,Int64},Int64}}
     #=     graph::SimpleWeightedGraph =#
@@ -167,10 +168,16 @@ module MWCCPTools
             for j in i+1:N
                 ((e21,e22),w2) = positions[j]
                 if crossed_values(e11,e21,e12,e22)
-                        f_value += w1 * w2
+                        f_value += (w1 + w2)
                 end
             end
         end
+        return f_value
+    end
+
+    function objective_value(g::MWCCP)
+        positions = get_vertices_positions(g.edges, g.u_dict, g.v_dict)
+        f_value = objective_value(positions)
         return f_value
     end
 
