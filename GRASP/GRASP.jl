@@ -1,7 +1,7 @@
 include("../MWCCP.jl")
 include("../Neighborhoods/Neighborhoods.jl")
 include("../Local Search/local_search.jl")
-using .MWCCPTools, .Neighborhoods, .LocalSearch, Test
+using .MWCCPTools, .Neighborhoods, .LocalSearch
 
 #= Give file path as an argument when calling julia !  You can create a launch.json in Vscode. =#
 
@@ -123,29 +123,14 @@ function evaluate_alpha_for_grasp(g::MWCCP, iteration = 100)
     end
 end
 
-function print_average_time(heuristic_method, g::MWCCP, iterations)
-    elapsed_time = 0
-    solution = deepcopy(g)
-    for i in 1:iterations
-        start = time()
-        solution = heuristic_method(g, 20)
-        the_end = time()
-        println(i)
-        println(solution)
-        elapsed_time += (the_end - start)
-    end
-    println("")
-    print("Elapsed time : ")
-    println(elapsed_time / iterations)
-    return solution
-end
-
 println(g)
 
-#= @time begin
- =#    print_average_time(GRASP, g, 4)
-#=     res = GRASP(g, 20)
- =##=     res = local_search(g, get_move_one_node_neighborhood, get_best_improvement) =#
-#=     res = evaluate_alpha_for_grasp(g)
- =##= end =#
+@time begin
+#=    print_average_time(GRASP, g, 4)
+ =#    res = GRASP(g, 20)
+  #=
+#=  =#    res = local_search(g, get_flip_consecutive_nodes_neighborhood, get_best_improvement, 10)
+ =# #=     res = evaluate_alpha_for_grasp(g) =#
+ end
+ println(res)
 #= @test objective_value(res) == res.f_value =#

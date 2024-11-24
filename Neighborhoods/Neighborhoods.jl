@@ -1,7 +1,7 @@
 module Neighborhoods
 
     include("../MWCCP.jl")
-    using ..MWCCPTools
+    using ...MWCCPTools
 
     export get_flip_consecutive_nodes_neighborhood
     export get_move_one_node_neighborhood

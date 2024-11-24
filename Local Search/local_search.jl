@@ -1,10 +1,13 @@
 module LocalSearch
 
     include("../MWCCP.jl")
-#=     include("../Neighborhoods/Neighborhoods.jl") =#
-    using ..MWCCPTools#=,  .Neighborhoods =#
+    include("../Neighborhoods/Neighborhoods.jl")
+    using ..MWCCPTools,  .Neighborhoods
 
     export local_search
+    export print_average_time
+    export local_search_consecutive
+    
 
     ######### LOCAL SEARCH ##########
 
@@ -21,6 +24,29 @@ module LocalSearch
         end
 
     return current_solution
+    end
+
+    function print_average_time(heuristic_method, g::MWCCP, iterations, disp = true)
+        elapsed_time = 0
+        solution = deepcopy(g)
+        for i in 1:iterations
+            start = time()
+            solution = heuristic_method(g, 100)
+            the_end = time()
+            if disp
+                println(i)
+                println(solution)
+            end
+            elapsed_time += (the_end - start)
+        end
+        println("")
+        print("Elapsed time : ")
+        println(elapsed_time / iterations)
+        return solution
+    end
+
+    function local_search_consecutive(g::MWCCP, iterations)
+        local_search(g, get_flip_consecutive_nodes_neighborhood, get_best_improvement, iterations)
     end
 
 end
