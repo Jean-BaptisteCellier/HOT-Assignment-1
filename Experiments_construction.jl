@@ -84,15 +84,19 @@ function experiment_randomized_shuffle(filepath, iterations=10)
 
     avg_cost = mean(cost_list)
     avg_time = mean(time_list) / 1000  
+    cost_stddev = std(cost_list)
+    time_stddev = std(time_list) / 1000
 
     avg_final_obj = cost_list[end]
 
     println("\n---- Experiment Summary ----")
     println("--- Randomized construction [Shuffle] ---")
-    println("Best Solution Cost: $best_cost")
-    println("Average Cost: $avg_cost")
-    println("Average Running Time: $avg_time seconds")
-    println("Final Objective (last run): $avg_final_obj")
+    println("Best solution cost: $best_cost")
+    println("Average cost: $avg_cost")
+    println("Cost std dev: $cost_stddev")
+    println("Average running time: $avg_time seconds")
+    println("Time std dev: $time_stddev")
+    println("Final objective (last run): $avg_final_obj")
     
     return best_sol, best_cost, avg_cost, avg_final_obj, avg_time
 end
@@ -130,11 +134,16 @@ function experiment_K_randomized(filepath, k, iterations=10)
     avg_time = mean(time_list) / 1000  # Convert ms to seconds
     avg_final_obj = cost_list[end]
 
+    cost_stddev = std(cost_list)
+    time_stddev = std(time_list) / 1000
+
     println("\n--- Experiment Summary ---")
     println("--- Randomized construction [K-randomized] ---")
     println("Best Solution Cost: $best_cost")
     println("Average Cost: $avg_cost")
+    println("Cost std dev: $cost_stddev")
     println("Average Running Time: $avg_time seconds")
+    println("Time std dev: $time_stddev")
     println("Final Objective (last run): $avg_final_obj")
 
     return best_sol, best_cost, avg_cost, avg_final_obj, avg_time
@@ -144,8 +153,8 @@ end
 #########################################################################################
 ################################## EXPERIMENTS ##########################################
 
-filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/medium/inst_200_20_00001"
+# filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/small/inst_50_4_00001"
 
 # experiment_greedy_det(filepath, 5)
 # experiment_randomized_shuffle(filepath)
-experiment_K_randomized(filepath, 10)
+# experiment_K_randomized(filepath, 10)
