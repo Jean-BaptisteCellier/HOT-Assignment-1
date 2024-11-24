@@ -141,5 +141,5 @@ constraints = read_constraints(filepath, n_constraints)
 edges = read_edges(filepath)
 
 # experiment_greedy_det(unodes, vnodes, edges, constraints)
-experiment_randomized_shuffle(unodes, vnodes, edges, constraints)
+# experiment_randomized_shuffle(unodes, vnodes, edges, constraints)
 # experiment_Kgreedy_randomized(unodes, vnodes, edges, constraints, 5)
