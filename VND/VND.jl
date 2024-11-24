@@ -52,7 +52,7 @@ function print_average_time(heuristic_method, g::MWCCP, iterations)
     solution = deepcopy(g)
     for _ in 1:iterations
         start = time()
-        solution = VND(g, 3)
+        solution = heuristic_method(g, 3)
         the_end = time()
         elapsed_time += (the_end - start)
     end

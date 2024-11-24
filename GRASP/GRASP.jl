@@ -123,12 +123,29 @@ function evaluate_alpha_for_grasp(g::MWCCP, iteration = 100)
     end
 end
 
+function print_average_time(heuristic_method, g::MWCCP, iterations)
+    elapsed_time = 0
+    solution = deepcopy(g)
+    for i in 1:iterations
+        start = time()
+        solution = heuristic_method(g, 20)
+        the_end = time()
+        println(i)
+        println(solution)
+        elapsed_time += (the_end - start)
+    end
+    println("")
+    print("Elapsed time : ")
+    println(elapsed_time / iterations)
+    return solution
+end
+
 println(g)
 
-@time begin
-    res = GRASP(g, 10)
-    #= res = local_search(g, get_move_one_node_neighborhood, get_best_improvement) =#
-end
+#= @time begin
+ =#    print_average_time(GRASP, g, 4)
+#=     res = GRASP(g, 20)
+ =##=     res = local_search(g, get_move_one_node_neighborhood, get_best_improvement) =#
+#=     res = evaluate_alpha_for_grasp(g)
+ =##= end =#
 #= @test objective_value(res) == res.f_value =#
-
-println(res)
