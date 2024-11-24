@@ -34,42 +34,6 @@ function delta_evaluation(vnode, v_order, edges, v_index)
     return delta_cost
 end
 
-function greedy_heuristic(unodes, vnodes, edges, constraints)
-    remaining_vnodes = copy(vnodes)
-    v_order = []
-    v_index = Dict()  # Positions of nodes in the solution
-    total_cost = 0
-
-    while !isempty(remaining_vnodes)
-        min_cost = Inf
-        best_vnode = nothing
-
-        for vnode in remaining_vnodes
-            if constraints_satisfied(v_order, vnode, constraints)
-                delta_cost = delta_evaluation(vnode, v_order, edges, v_index)
-                candidate_cost = total_cost + delta_cost
-                if candidate_cost < min_cost
-                    min_cost = candidate_cost
-                    best_vnode = vnode
-                end
-            end
-        end
-
-        if best_vnode === nothing
-            error("No valid node found! Check constraints.")
-        end
-
-        # Add the best vnode to the solution
-        push!(v_order, best_vnode)
-        v_index[best_vnode] = length(v_order)  # Update the position of the node
-        total_cost += delta_cost  # Accumulate the delta cost (not halved)
-        filter!(x -> x != best_vnode, remaining_vnodes)  # Remove the chosen node from remaining list
-    end
-
-    return v_order, total_cost  # Return the solution and the total cost
-end
-
-
 ################ Greedy deterministic construction heuristic ################
 
 function greedy_heuristic(unodes, vnodes, edges, constraints)
@@ -105,7 +69,7 @@ end
 ################ Randomized construction heuristics ################
 
 # 1st option for randomization: shuffling the vnodes input order at each iteration
-function randomized_construction_heuristic(unodes, vnodes, edges, constraints)
+function randomized_construction_shuffle(unodes, vnodes, edges, constraints)
     shuffled_vnodes = shuffle(vnodes)
     return greedy_heuristic(unodes, shuffled_vnodes, edges, constraints)
 end
@@ -146,21 +110,6 @@ function randomized_greedy_heuristic(unodes, vnodes, edges, constraints, k)
     end
     return v_order, total_cost
 end
-
-# # Repeating the last function max_iter times
-# function repeat_randomized_K(unodes, vnodes, edges, constraints, k, max_iter)
-#     rcl = []
-#     costs = []
-#     for _ in 1:max_iter
-#         sol_iter, cost = randomized_greedy_heuristic(unodes, vnodes, edges, constraints, k)
-#         push!(rcl, sol_iter)
-#         push!(costs, cost)
-#     end
-#     best_cost_idx = argmin(costs)
-#     best_cost = costs[best_cost_idx]
-#     best_sol = rcl[best_cost_idx]
-#     return best_sol, best_cost
-# end
 
 function calculate_full_cost(v_order, edges)
     total_cost = 0
