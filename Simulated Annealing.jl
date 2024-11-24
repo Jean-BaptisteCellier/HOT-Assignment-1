@@ -3,9 +3,7 @@ include("Experiments_construction.jl")
 include("construction_heuristics.jl")
 
 function simulated_annealing(initial_solution, initial_cost, random_neighbor_function,
-    objective_function, edges, constraints; 
-    initial_temperature=100.0,
-    cooling_rate=0.95, min_temperature=1e-3)
+    edges, constraints; initial_temperature=100.0, cooling_rate=0.95, min_temperature=1e-3)
 
     temperature = initial_temperature
     current_solution = initial_solution
@@ -25,7 +23,7 @@ function simulated_annealing(initial_solution, initial_cost, random_neighbor_fun
         if current_cost < best_cost
             best_solution = current_solution
             best_cost = current_cost
-            println("New improvement $best_solution: Cost = $best_cost")
+            #println("New improvement $best_solution: Cost = $best_cost")
         end
         # Cool down the temperature
         temperature *= cooling_rate
