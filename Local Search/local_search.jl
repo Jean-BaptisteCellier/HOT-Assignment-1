@@ -27,12 +27,16 @@ module LocalSearch
     return current_solution
     end
 
-    function print_average_time(heuristic_method, g::MWCCP, iterations, ls_it, disp = true)
+    function print_average_time(heuristic_method, g::MWCCP, iterations, ls_it=0, disp = true, params = 2)
         elapsed_time = 0
         solution = deepcopy(g)
         for i in 1:iterations
             start = time()
-            solution = heuristic_method(g, ls_it)
+            if params == 2
+                solution = heuristic_method(g, ls_it)
+            else
+                solution = heuristic_method(g)
+            end
             the_end = time()
             if disp
                 println(i)
