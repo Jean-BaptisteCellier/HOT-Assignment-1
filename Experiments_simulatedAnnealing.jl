@@ -5,6 +5,12 @@ include("Script data processing.jl")
 include("construction_heuristics.jl")
 include("Simulated Annealing.jl")
 
+if length(ARGS) > 0
+    filepath = ARGS[1]
+else
+    error("A graph file must be given.")
+end
+
 function experiment_simulated_annealing(filepath, neighbor_function;  
     initial_temperature=100, cooling_rate=0.95, min_temperature=1e-3, repetitions=10)
 
@@ -57,7 +63,9 @@ function experiment_simulated_annealing(filepath, neighbor_function;
     return best_sol, best_cost, avg_cost, final_cost, avg_time
 end
 
-
+@time begin
+    experiment_simulated_annealing(filepath, random_swap, repetitions = 4)
+end
 
 ########### MAIN CODE ####################
 

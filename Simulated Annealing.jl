@@ -155,8 +155,7 @@ end
 # best_solution, best_cost = simulated_annealing(
 #     initial_solution,
 #     initial_cost,
-#     random_two_opt, 
-#     calculate_full_cost, 
+#     random_swap, 
 #     edges, constraints,
 #     initial_temperature=100.0,
 #     cooling_rate=0.9,
