@@ -162,5 +162,5 @@ end
 # filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/small/inst_50_4_00001"
 
 # experiment_greedy_det(filepath, 5)
-# experiment_randomized_shuffle(filepath)
+experiment_randomized_shuffle(filepath)
 # experiment_K_randomized(filepath, 10)
