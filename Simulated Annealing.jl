@@ -129,25 +129,14 @@ end
 
 # # Path to the input file
 # filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/test_instances/inst_4_0_00001.unknown"
-
 # # Read sizes
 # n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
-
 # # Create unodes and vnodes
 # unodes, vnodes = create_unodes_vnodes(n_unodes, n_vnodes)
-
 # # Read constraints and edges
 # constraints = read_constraints(filepath, n_constraints)
 # edges = read_edges(filepath)
-
 # initial_solution, initial_cost = greedy_heuristic(unodes, vnodes, edges, constraints)
-# println("Initial solution: $initial_solution")
-# println("Initial cost: $initial_cost")
-
-# initial_solution = [6,7,8,9,10]
-# edges = [((1,7),1), ((2,8),2), ((3,9),1), ((4,10),3), ((5,6), 11)]
-# constraints = [(7,10), (8,9)]
-# initial_cost = calculate_full_cost(initial_solution, edges)
 # println("Initial solution: $initial_solution")
 # println("Initial cost: $initial_cost")
 
@@ -155,8 +144,7 @@ end
 # best_solution, best_cost = simulated_annealing(
 #     initial_solution,
 #     initial_cost,
-#     random_two_opt, 
-#     calculate_full_cost, 
+#     random_swap, 
 #     edges, constraints,
 #     initial_temperature=100.0,
 #     cooling_rate=0.9,
