@@ -76,7 +76,7 @@ function experiment_randomized_shuffle(filepath, iterations=10)
    
     for i in 1:iterations
         start_time = now()
-        sol, cost = randomized_construction_heuristic(unodes, vnodes, edges, constraints) 
+        sol, cost = randomized_construction_shuffle(unodes, vnodes, edges, constraints) 
         end_time = now()
         elapsed_time = end_time - start_time
         push!(time_list, Dates.value(elapsed_time))  
@@ -161,6 +161,6 @@ end
 
 # filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/small/inst_50_4_00001"
 
-experiment_greedy_det(filepath, 5)
+# experiment_greedy_det(filepath, 5)
 # experiment_randomized_shuffle(filepath)
 # experiment_K_randomized(filepath, 10)
