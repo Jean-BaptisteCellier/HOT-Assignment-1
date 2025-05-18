@@ -2,7 +2,7 @@
 function read_sizes(filename)
     println("Opening file: ", filename)  # Debugging
     open(filename, "r") do file
-        sizes = split(readline(file))  # Read the first line and split it
+        sizes = split(readline(file))
         n_unodes = parse(Int, sizes[1])  
         n_vnodes = parse(Int, sizes[2])  
         n_constraints = parse(Int, sizes[3])
@@ -43,16 +43,16 @@ function read_edges(filename::String)
     
     open(filename, "r") do file
         for line in eachline(file)
-            line = strip(line)  # Remove leading/trailing spaces
+            line = strip(line)  # Remove spaces
             
             # Skip empty lines or comments
             if isempty(line) || startswith(line, "#")
                 continue
             end
             
-            # If we encounter the #edges marker, switch to reading edges
+            # Skip the line #edges
             if line == "#edges"
-                continue  # Skip the line #edges
+                continue 
             end
             
             # Parse edges (node1, node2, cost)
@@ -70,24 +70,3 @@ function read_edges(filename::String)
     end
     return edges
 end
-
-# ########### MAIN CODE ####################
-
-# # # Path to the input file
-# filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/small/inst_50_4_00001"
-
-# # Read sizes
-# n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
-
-# # Create unodes and vnodes
-# unodes, vnodes = create_unodes_vnodes(n_unodes, n_vnodes)
-
-# # Read constraints and edges
-# constraints = read_constraints(filepath, n_constraints)
-# edges = read_edges(filepath)
-
-# # Print results to check
-# println("Unodes: ", unodes)
-# println("Vnodes: ", vnodes)
-# println("Constraints: ", constraints)
-# println("Edges: ", edges)

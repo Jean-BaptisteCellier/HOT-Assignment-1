@@ -1,4 +1,4 @@
-include("Experiments_construction.jl")
+include("construction_heuristics_experiments.jl")
 include("construction_heuristics.jl")
 
 function simulated_annealing(initial_solution, initial_cost, random_neighbor_function,
@@ -128,7 +128,7 @@ end
 ########### MAIN CODE ####################
 
 # # Path to the input file
-# filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/test_instances/inst_4_0_00001.unknown"
+# filepath = "../test_instances/inst_4_0_00001.unknown"
 # # Read sizes
 # n_unodes, n_vnodes, n_constraints, n_edges = read_sizes(filepath)
 # # Create unodes and vnodes

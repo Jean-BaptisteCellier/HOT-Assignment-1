@@ -1,9 +1,9 @@
 using Statistics  
 using Dates   
 
-include("Script data processing.jl")
+include("data_processing.jl")
 include("construction_heuristics.jl")
-include("Simulated Annealing.jl")
+include("simulated_annealing.jl")
 
 function experiment_simulated_annealing(filepath, neighbor_function;  
     initial_temperature=100, cooling_rate=0.95, min_temperature=1e-3, repetitions=10)
@@ -56,23 +56,3 @@ function experiment_simulated_annealing(filepath, neighbor_function;
 
     return best_sol, best_cost, avg_cost, final_cost, avg_time
 end
-
-
-
-########### MAIN CODE ####################
-
-# Path to the input file
-# filepath = "C:/Users/jbcel/OneDrive/Documents/TU Wien/Heuristic Optimization Techniques/tuning_instances/tuning_instances/small/inst_50_4_00002"
-
-# initial_solution = [6,7,8,9,10]
-# edges = [((1,7),1), ((2,8),2), ((3,9),1), ((4,10),3), ((5,6), 11)]
-# constraints = [(7,10), (8,9)]
-
-# best_sol, best_cost, avg_cost, final_cost, avg_time = experiment_simulated_annealing(
-#     filepath,
-#     random_swap,
-#     initial_temperature=10,
-#     cooling_rate=0.97,
-#     min_temperature=1e-3,
-#     repetitions=4
-# )
