@@ -1,6 +1,6 @@
 # MWCCP Heuristics — TU Wien | Heuristic Optimization Techniques (WS 2024)
 
-This repository contains the first part of a larger assignment for the course **Heuristic Optimization Techniques** at **TU Wien**, **Winter Semester 2024**.
+This repository contains the first part of a larger assignment for the course **Heuristic Optimization Techniques** at **TU Wien**, **WS 2024**.
 
 ## Problem: Minimum Weighted Crossing with Constraints Problem (MWCCP)
 
